@@ -1,0 +1,29 @@
+name: Daily GitHub Streak
+
+on:
+  schedule:
+    # Runs every day at 06:30 UTC (12:00 PM IST)
+    - cron: "30 6 * * *"
+  workflow_dispatch:   # lets you run it manually from the Actions tab
+
+permissions:
+  contents: write
+
+jobs:
+  commit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Update streak log
+        run: |
+          echo "$(date -u '+%Y-%m-%d %H:%M:%S UTC') - daily check-in" >> streak-log.txt
+
+      - name: Commit and push
+        run: |
+          git config user.name  "1rio-zand"
+          git config user.email "riozander03@gmail.com"
+          git add streak-log.txt
+          git commit -m "chore: daily streak update $(date -u +%Y-%m-%d)"
+          git push
